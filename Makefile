@@ -1,32 +1,83 @@
-CC=gcc
-PACKAGE=ts2mpa
-VERSION=0.3
-CFLAGS=-g -Wall -DVERSION=$(VERSION)
-LDFLAGS=
+###
+###     Makefile for ts2es library
+###
+
+NAME=   ts2es
+VERSION=  0.3
+
+### include debug information: 1=yes, 0=no
+DBG?= 0
+
+DEPEND= dependencies
+
+BINDIR= ./
+INCDIR= ./
+SRCDIR= ./
+OBJDIR= obj
+
+ADDSRCDIR=ts2es/
+ADDINCDIR=
+
+CC=     $(shell which gcc)
+
+LIBS=   -lm
+FLAGS=  -ffloat-store -Wall -I$(INCDIR) -I$(ADDINCDIR) -D_FILE_OFFSET_BITS=64
+FLAGS+=-DVERSION=$(VERSION)
+
+ifeq ($(DBG),1)
+SUFFIX= .dbg
+FLAGS+= -g -O0
+else
+SUFFIX=
+FLAGS+= -O2
+endif
+
+OBJSUF= .o$(SUFFIX)
+
+SRC=    $(wildcard $(SRCDIR)/*.c) 
+ADDSRC= $(wildcard $(ADDSRCDIR)/*.c)
+OBJ=    $(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o$(SUFFIX)) $(ADDSRC:$(ADDSRCDIR)/%.c=$(OBJDIR)/%.o$(SUFFIX)) 
+BIN=    $(BINDIR)/$(NAME)$(SUFFIX).exe
 
 
+default: depend bin tags
 
-all: ts2mpa
+dependencies:
+	@echo "" >dependencies
 
-ts2mpa: ts2mpa.o mpa_header.o
-	$(CC) $(LDFLAGS) -o ts2mpa ts2mpa.o mpa_header.o
-
-ts2mpa.o: ts2mpa.c ts2mpa.h mpa_header.h
-	$(CC) $(CFLAGS) -c ts2mpa.c
-
-mpa_header.o: mpa_header.c mpa_header.h
-	$(CC) $(CFLAGS) -c mpa_header.c
-  
 clean:
-	rm -f *.o ts2mpa
-	
-dist:
-	distdir='$(PACKAGE)-$(VERSION)'; mkdir $$distdir || exit 1; \
-	list=`git ls-files`; for file in $$list; do \
-		cp -pR $$file $$distdir || exit 1; \
-	done; \
-	tar -zcf $$distdir.tar.gz $$distdir; \
-	rm -fr $$distdir
-	
-	
-.PHONY: all clean dist
+	@echo remove all objects
+	@rm -f $(OBJDIR)/*
+	@rm -f $(BIN)
+tags:
+	@echo update tag table
+	@ctags inc/*.h src/*.c
+
+bin:    $(OBJ)
+	@echo
+	@echo 'creating binary "$(BIN)"'
+	@$(CC) -o $(BIN) $(OBJ) $(LIBS)
+	@echo '... done'
+	@echo
+
+depend:
+	@echo
+	@echo 'checking dependencies'
+	@echo 'Making the obj directory'	
+	@mkdir -p $(OBJDIR)
+	@$(SHELL) -ec '$(CC) -MM $(CFLAGS) -I$(INCDIR) -I$(ADDINCDIR) $(SRC) $(ADDSRC)                  \
+         | sed '\''s@\(.*\)\.o[ :]@$(OBJDIR)/\1.o$(SUFFIX):@g'\''               \
+         >$(DEPEND)'
+	@echo
+
+$(OBJDIR)/%.o$(SUFFIX): $(SRCDIR)/%.c
+	@echo 'compiling object file "$@" ...'
+	@$(CC) -c -o $@ $(FLAGS) $<
+
+$(OBJDIR)/%.o$(SUFFIX): $(ADDSRCDIR)/%.c
+	@echo 'compiling object file "$@" ...'
+	@$(CC) -c -o $@ $(FLAGS) $<
+
+
+#include $(DEPEND)
+

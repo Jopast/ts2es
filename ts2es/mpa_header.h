@@ -14,43 +14,46 @@
  *  You should have received a copy of the GNU Lesser General Public
  *  License along with this library; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *  
+ *
  */
 
 #ifndef _MPA_HEADER_H
 #define _MPA_HEADER_H
 
+#include <stdint.h>
+#include "ts2es.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct {
-	unsigned int syncword;
-	unsigned int layer;
-	unsigned int version;
-	unsigned int error_protection;
-	unsigned int bitrate_index;
-	unsigned int samplerate_index;
-	unsigned int padding;
-	unsigned int extension;
-	unsigned int mode;
-	unsigned int mode_ext;
-	unsigned int copyright;
-	unsigned int original;
-	unsigned int emphasis;
-	unsigned int channels;
-	unsigned int bitrate;
-	unsigned int samplerate;
-	unsigned int samples;
-	unsigned int framesize;
+    uint32_t syncword;
+    uint32_t layer;
+    uint32_t version;
+    uint32_t error_protection;
+    uint32_t bitrate_index;
+    uint32_t samplerate_index;
+    uint32_t padding;
+    uint32_t extension;
+    uint32_t mode;
+    uint32_t mode_ext;
+    uint32_t copyright;
+    uint32_t original;
+    uint32_t emphasis;
+    uint32_t channels;
+    uint32_t bitrate;
+    uint32_t samplerate;
+    uint32_t samples;
+    uint32_t framesize;
 } mpa_header_t;
 
-
-
 // Get parse the header of a frame of mpeg audio
-int mpa_header_parse( const unsigned char* buf, mpa_header_t *mh);
+int mpa_header_parse(ts2es_t *h_ts, const uint8_t *buf, mpa_header_t *mh);
 
-void mpa_header_print( mpa_header_t *mh );
-void mpa_header_debug( mpa_header_t *mh );
+void mpa_header_print(ts2es_t *h_ts, mpa_header_t *mh);
 
-
-
+#ifdef __cplusplus
+};
+#endif
 #endif
