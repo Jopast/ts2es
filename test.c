@@ -43,7 +43,7 @@ void ts2es_output_es(ts2es_t *h_ts, ts2es_es_t *p_es, void *opque)
             ts2es_report(h_ts, TS2ES_ERROR, "failed to write stream out");
             exit(-2);
         } else {
-            ts2es_report(h_ts, TS2ES_DEBUG, "writing TS packet, PID[%d], pts: %d\n", p_es->pid, p_es->pts);
+            ts2es_report(h_ts, TS2ES_DEBUG, "writing TS packet, PID[%d], pts: %lld\n", p_es->pid, p_es->pts);
         }
         h_ts->total_bytes += written;
     }
@@ -60,11 +60,12 @@ int main(int argc, char **argv)
 
     // Parse the command-line parameters
     param.i_log_level = TS2ES_DEBUG;   // only report information whose level >= i_log_level
-    param.stream_type_2_catch = 66;    // stream_type to catch, if >=0, would overwrite the pid_min and pid_max settings
-    // param.pid_min = 0x166;
+    param.stream_type_2_catch = 67;    // stream_type to catch, if >=0, would overwrite the pid_min and pid_max settings
+                                       // 66, HEVC; 67, AVS2;
+    // param.pid_min = 0x166;             // start PID number
     // param.pid_max = param.pid_min + 16;
 
-    strcpy(param.s_input, "test.ts");
+    strcpy(param.s_input, "video.ts");
     strcpy(param.s_output, "output.es");
 
     h_ts = ts2es_create(&param, &ts2es_output_es, NULL);
