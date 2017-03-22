@@ -9,9 +9,6 @@ Usage:
 
     ts2es [options] <infile> <outfile>
       -h             Help - this message.
-      -q             Quiet - don't print messages to stderr.
-      -p <pid>       Choose a specific transport stream PID.
-      -s <streamid>  Choose a specific PES stream ID.
 
 Todo
 ----
