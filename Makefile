@@ -10,8 +10,8 @@ DBG?= 0
 
 DEPEND= dependencies
 
-BINDIR= ./
-INCDIR= ./
+BINDIR= bin
+INCDIR= source
 SRCDIR= source
 OBJDIR= obj
 
