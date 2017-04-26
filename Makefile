@@ -12,10 +12,10 @@ DEPEND= dependencies
 
 BINDIR= ./
 INCDIR= ./
-SRCDIR= ./
+SRCDIR= source
 OBJDIR= obj
 
-ADDSRCDIR=ts2es/
+ADDSRCDIR=source/ts2es/
 ADDINCDIR=
 
 CC=     $(shell which gcc)
