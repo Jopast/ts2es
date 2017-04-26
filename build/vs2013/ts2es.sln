@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ts2pes", "ts2pes.vcxproj", "{13BD38DF-F385-4B4E-A427-D6027D0343EB}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ts2es", "ts2es.vcxproj", "{13BD38DF-F385-4B4E-A427-D6027D0343EB}"
 	ProjectSection(ProjectDependencies) = postProject
 		{DB6A38B5-342C-40E0-9B40-8E94037DDC5B} = {DB6A38B5-342C-40E0-9B40-8E94037DDC5B}
 	EndProjectSection

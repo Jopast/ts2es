@@ -11,13 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ts2es\mpa_header.c" />
-    <ClCompile Include="ts2es\ts2es.c" />
-    <ClCompile Include="ts2es\ts_table.c" />
+    <ClCompile Include="..\..\source\ts2es\mpa_header.c" />
+    <ClCompile Include="..\..\source\ts2es\ts2es.c" />
+    <ClCompile Include="..\..\source\ts2es\ts_table.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ts2es\mpa_header.h" />
-    <ClInclude Include="ts2es\ts2es.h" />
+    <ClInclude Include="..\..\source\ts2es\mpa_header.h" />
+    <ClInclude Include="..\..\source\ts2es\ts2es.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DB6A38B5-342C-40E0-9B40-8E94037DDC5B}</ProjectGuid>
