@@ -75,6 +75,34 @@ void ts2es_report(ts2es_t *h_ts, int i_type, const char *format, ...)
 #endif
 }
 
+/* ---------------------------------------------------------------------------
+ * Parse AVS1/AVS2/AVC/HEVC video start-code
+ * returns 1 if valid, or 0 if invalid
+ */
+static
+int is_valid_video_pes(ts2es_t *h_ts, const uint8_t *buf)
+{
+    const int byte1 = buf[0];
+    const int byte2 = buf[1];
+    const int byte3 = buf[2];
+    const int byte4 = buf[3];
+    /* video start-code */
+    if (byte1 == 0x00 && byte2 == 0x00) {
+        /* AVS start code */
+        if (byte3 == 0x01) {
+            return 1;
+        }
+        /* HEVC NAL, see HEVC draft:
+         * 7.4.2.3  Encapsulation of an SODB within an RBSP (informative)  */
+        if ((byte3 >= 0x00 && byte3 < 0x11) ||
+            (byte3 == 0x11 && byte4 <= 0x11)) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
 
 /* ---------------------------------------------------------------------------
  * Check to see if a PES header looks like a valid MPEG Audio one
@@ -187,7 +215,18 @@ static void extract_pes_payload(ts2es_t *h_ts, ts2es_es_t *p_es, int cur_pid, ui
                     mpa_header_print(h_ts, &mpah);
                     ts2es_report(h_ts, TS2ES_INFO, "MPEG Audio Framesize: %d bytes\n", mpah.framesize);
                 } else {
-                    ts2es_report(h_ts, TS2ES_INFO, "Regained sync at 0x % lx\n", ((unsigned long)h_ts->total_packets - 1)*TS_PACKET_SIZE);
+                    ts2es_report(h_ts, TS2ES_INFO, "Regained sync at 0x % lx\n", 
+                        ((unsigned long)h_ts->total_packets - 1) * TS_PACKET_SIZE);
+                }
+                p_es->synced = 1;
+                h_ts->never_synced = 0;
+            } else if (is_valid_video_pes(h_ts, es_ptr)) {
+                /* video ES start-code */
+                if (h_ts->never_synced) {
+                    ts2es_report(h_ts, TS2ES_INFO, "AVS Video StartCode Found\n");
+                } else {
+                    ts2es_report(h_ts, TS2ES_INFO, "Regained sync at 0x % lx\n", 
+                        ((unsigned long)h_ts->total_packets - 1) * TS_PACKET_SIZE);
                 }
                 p_es->synced = 1;
                 h_ts->never_synced = 0;
