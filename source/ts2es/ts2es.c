@@ -408,13 +408,8 @@ int ts2es_demux_ts_packet(ts2es_t *h_ts, uint8_t *buf, size_t buf_len)
  */
 ts2es_t *ts2es_create(ts2es_param_t *p_param, f_ts2es_output_es p_fun_out, void *opque)
 {
-#if ARCH_X86_64
-#  define CACHE_LINE_SIZE   32        /* for x86-64 */
-#  define ALIGN_POINTER(p)  (p) = (uint8_t *)((uint64_t)((p) + (CACHE_LINE_SIZE - 1)) & (~(uint64_t)(CACHE_LINE_SIZE - 1)))
-#else
-#  define CACHE_LINE_SIZE   32       /* for X86-32 */
-#  define ALIGN_POINTER(p)  (p) = (uint8_t *)((uint32_t)((p) + (CACHE_LINE_SIZE - 1)) & (~(uint32_t)(CACHE_LINE_SIZE - 1)))
-#endif
+#  define CACHE_LINE_SIZE   32     /* align size */
+#  define ALIGN_POINTER(p)  (p) = (uint8_t *)((intptr_t)((p) + (CACHE_LINE_SIZE - 1)) & (~(intptr_t)(CACHE_LINE_SIZE - 1)))
     uint8_t *mem_base;
     uint32_t mem_size;
     ts2es_t *h_ts;
